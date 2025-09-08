@@ -67,10 +67,10 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelect }) => {
       <div className="flex flex-col items-center gap-6 animate-fade-in">
         <TinderFlameIcon className="w-16 h-16 text-pink-500 mb-2" />
         <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-          Nenhuma mulher quer um cara <span className="text-tinder-gradient">feio e pobre</span>.
+          Transforme seu perfil em um <span className="text-tinder-gradient">imã de matches</span>.
         </h1>
         <p className="max-w-2xl text-lg text-gray-500 md:text-xl">
-          Vamos dar um jeito nisso. Escolha uma opção para começar a transformação.
+          Envie uma foto e deixe a IA turbinar sua presença no Tinder.
         </p>
         {error && <p className="text-red-500 font-semibold mt-4">{error}</p>}
         
