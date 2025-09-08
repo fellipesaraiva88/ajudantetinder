@@ -31,11 +31,11 @@ const dataURLtoFile = (dataurl: string, filename: string): File => {
 export type JourneyStep = 'SMILE' | 'AURA' | 'FASHION' | 'PET' | 'BACKGROUND' | 'FINAL';
 
 const LOADING_MESSAGES = [
-    'Um momento, a mágica está acontecendo...',
-    'Ajustando os pixels para a perfeição...',
-    'Nossa IA está procurando o seu melhor ângulo...',
-    'Gerando seu novo visual de perfil...',
-    'Quase pronto para os matches!',
+    'Um instante, estamos preparando sua melhor versão...',
+    'Lapidando cada pixel para brilhar...',
+    'A IA está encontrando o seu ângulo mais irresistível...',
+    'Criando um visual que vale o match...',
+    'Quase lá! Seu novo perfil está chegando.',
 ];
 
 const App: React.FC = () => {
@@ -229,7 +229,7 @@ const App: React.FC = () => {
               )}
                {showWelcome && (
                   <div className="absolute inset-0 bg-tinder-gradient opacity-90 z-20 flex items-center justify-center p-4">
-                      <p className="text-white text-3xl font-extrabold text-center animate-fade-in drop-shadow-lg">CANSADO(A) DE SER FEIO(A) NO TINDER? VAMOS RESOLVER ISSO.</p>
+                      <p className="text-white text-3xl font-extrabold text-center animate-fade-in drop-shadow-lg">PRONTO PARA VIRAR DESTAQUE NO TINDER? DEIXE A IA TRABALHAR.</p>
                   </div>
                 )}
               <img
