@@ -1,6 +1,8 @@
 {
   "name": "AJUDA NO TINDER.",
   "description": "Embarque em uma jornada criativa de transformação. Aprimore seu sorriso, experimente novos looks e mude seu cenário com o poder da IA.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "camera"
+  ],
   "prompt": ""
 }

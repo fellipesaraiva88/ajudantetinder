@@ -4,32 +4,30 @@
 */
 
 import React, { useState } from 'react';
-import { TinderFlameIcon } from './icons';
+import { CameraIcon, TinderFlameIcon } from './icons';
 import Spinner from './Spinner';
 
 interface StartScreenProps {
   onImageSelect: (file: File) => void;
 }
 
-const PRESET_IMAGES = [
-    {
-        name: 'Homem Sorrindo',
-        url: 'https://st4.depositphotos.com/23658156/29521/i/450/depositphotos_295218872-stock-photo-expression-asian-toothless-funny-guy.jpg',
-        filename: 'preset-guy-1.jpg'
-    }
-];
+const PRESET_IMAGE = {
+    name: 'Homem Sorrindo',
+    url: 'https://st4.depositphotos.com/23658156/29521/i/450/depositphotos_295218872-stock-photo-expression-asian-toothless-funny-guy.jpg',
+    filename: 'preset-guy-1.jpg'
+};
 
 
 const StartScreen: React.FC<StartScreenProps> = ({ onImageSelect }) => {
-  const [loadingImage, setLoadingImage] = useState<string | null>(null);
+  const [loadingImage, setLoadingImage] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleImageClick = async (url: string, filename: string) => {
+  const handlePresetClick = async () => {
     if (loadingImage) return;
-    setLoadingImage(url);
+    setLoadingImage(true);
     setError(null);
     
-    // Use a CORS proxy to bypass browser restrictions on fetching cross-origin images.
+    const { url, filename } = PRESET_IMAGE;
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 
     try {
@@ -39,9 +37,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelect }) => {
         }
         const blob = await response.blob();
         
-        // Proxies can sometimes alter the MIME type, so we'll infer it from the filename.
         const fileExtension = filename.split('.').pop()?.toLowerCase();
-        let mimeType = blob.type; // Use blob's type as a fallback.
+        let mimeType = blob.type;
         if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'jfif') {
             mimeType = 'image/jpeg';
         } else if (fileExtension === 'png') {
@@ -52,10 +49,18 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelect }) => {
         onImageSelect(file);
     } catch (e) {
         console.error("Error fetching preset image:", e);
-        setError("Não foi possível carregar a imagem. Verifique sua conexão ou tente novamente mais tarde.");
-        setLoadingImage(null);
+        setError("Não foi possível carregar a imagem de exemplo. Tente enviar sua própria foto.");
+        setLoadingImage(false);
     }
   };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      onImageSelect(file);
+    }
+  };
+
 
   return (
     <div className="w-full max-w-4xl mx-auto text-center p-8 transition-all duration-300">
@@ -65,30 +70,53 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelect }) => {
           Nenhuma mulher quer um cara <span className="text-tinder-gradient">feio e pobre</span>.
         </h1>
         <p className="max-w-2xl text-lg text-gray-500 md:text-xl">
-          Vamos dar um jeito nisso. Clique no perfil para começar a transformação.
+          Vamos dar um jeito nisso. Escolha uma opção para começar a transformação.
         </p>
         {error && <p className="text-red-500 font-semibold mt-4">{error}</p>}
-        <div className="mt-6 flex justify-center w-full max-w-md">
-          {PRESET_IMAGES.map(({ name, url, filename }) => (
-            <div key={url} className="relative group">
-                <button
-                    onClick={() => handleImageClick(url, filename)}
-                    disabled={!!loadingImage}
-                    className="w-full rounded-xl overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-pink-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-wait"
-                >
-                    <img src={url} alt={name} className="w-full h-80 object-cover" />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300 flex items-end justify-center p-4">
-                        <span className="text-white text-lg font-bold drop-shadow-md">Transformar este</span>
-                    </div>
-                </button>
-                {loadingImage === url && (
-                    <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-10">
-                        <Spinner />
-                    </div>
-                )}
+        
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
+            {/* Option 1: Use Preset */}
+            <div className="flex flex-col items-center">
+                <h2 className="text-lg font-semibold text-gray-600 mb-4">Opção 1: Transforme o Exemplo</h2>
+                <div className="relative group w-full">
+                    <button
+                        onClick={handlePresetClick}
+                        disabled={loadingImage}
+                        className="w-full h-80 rounded-xl overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-pink-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-wait"
+                    >
+                        <img src={PRESET_IMAGE.url} alt={PRESET_IMAGE.name} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300 flex items-end justify-center p-4">
+                            <span className="text-white text-lg font-bold drop-shadow-md">Transformar este Perfil</span>
+                        </div>
+                    </button>
+                    {loadingImage && (
+                        <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-10">
+                            <Spinner />
+                        </div>
+                    )}
+                </div>
             </div>
-          ))}
+
+            {/* Option 2: Upload Own Photo */}
+             <div className="flex flex-col items-center">
+                <h2 className="text-lg font-semibold text-gray-600 mb-4">Opção 2: Envie Sua Foto</h2>
+                 <label className="w-full h-80 cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center transition-all duration-300 hover:border-pink-400 hover:bg-pink-50 hover:shadow-lg">
+                    <div className="text-center">
+                        <CameraIcon className="w-12 h-12 mx-auto text-gray-400" />
+                        <span className="mt-2 block font-bold text-gray-700">Tirar ou Enviar Foto</span>
+                        <span className="mt-1 block text-sm text-gray-500">Comece com sua própria imagem</span>
+                    </div>
+                    <input
+                        type="file"
+                        className="hidden"
+                        accept="image/png, image/jpeg, image/webp"
+                        capture="user"
+                        onChange={handleFileSelect}
+                    />
+                </label>
+            </div>
         </div>
+
       </div>
     </div>
   );
